@@ -2,35 +2,18 @@
 from __future__ import print_function
 import webbrowser
 import json
-import logging
 import configparser
 import sys
 import requests
 from rauth import OAuth1Service
-from logging.handlers import RotatingFileHandler
-from accounts.accounts import Accounts
-from market.market import Market
-
-# My imports
 from datetime import datetime
 import time
 import signal
-import sys
 import csv
 
 # loading configuration file
 config = configparser.ConfigParser()
 config.read('config.ini')
-
-# logger settings
-logger = logging.getLogger('my_logger')
-logger.setLevel(logging.DEBUG)
-handler = RotatingFileHandler("python_client.log", maxBytes=5*1024*1024, backupCount=3)
-FORMAT = "%(asctime)-15s %(message)s"
-fmt = logging.Formatter(FORMAT, datefmt='%m/%d/%Y %I:%M:%S %p')
-handler.setFormatter(fmt)
-logger.addHandler(handler)
-
 
 def oauth():
     """Allows user authorization for the sample application with OAuth 1"""
@@ -60,15 +43,10 @@ def oauth():
                                   request_token_secret,
                                   params={"oauth_verifier": text_code})
 
-    main_menu(session, base_url)
+    collect_data(session, base_url)
 
 
-def main_menu(session, base_url):
-    """
-    Provides the different options for the sample application: Market Quotes, Account List
-
-    :param session: authenticated session
-    """
+def collect_data(session, base_url):
 
     def catch_sig_int(signum, frame):
         print("Ending data collection...\n")
@@ -77,10 +55,6 @@ def main_menu(session, base_url):
         sys.exit(0)
 
     signal.signal(signal.SIGINT, catch_sig_int)
-
-    menu_items = {"1": "Market Quotes",
-                  "2": "Account List",
-                  "3": "Exit"}
 
     url = base_url + "/v1/market/quote/GOOG.json"
 
