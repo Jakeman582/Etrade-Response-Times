@@ -1,12 +1,12 @@
 """This Python script provides examples on using the E*TRADE API endpoints"""
 from __future__ import print_function
+from rauth import OAuth1Service
+from datetime import datetime
 import webbrowser
 import json
 import configparser
 import sys
 import requests
-from rauth import OAuth1Service
-from datetime import datetime
 import time
 import signal
 import csv
